@@ -144,21 +144,21 @@ void loop() {
   // First set translational forces
 
        if(control.rt > 60){
-        lineForce = map(control.rt, 0, 1023, 0, 255);
+        lineForce = map(control.rt, 0, 1023, 0, 127);
       }
       
 
       if(control.lt > 60){
-        lineForce = map(control.lt, 0, 1023, 0, -255);
+        lineForce = map(control.lt, 0, 1023, 0, -127);
        
       }
 
         // Then set turning forces
       if(control.lx != 32768){
-        turnForce = map(control.lx, 0, 65536, -255, 255);
+        turnForce = map(control.lx, 0, 65536, -127, 127);
       }
 
-      lineForce = constrain(lineForce, -255, 255);
+      lineForce = constrain(lineForce, -127, 127);
 
       body.translate(lineForce); 
       body.turn(turnForce);
@@ -166,8 +166,7 @@ void loop() {
 
       body.go(); // move the body in accordance to the applied controller forces
 
-      
-
+    
       Serial << body.m0_v << ":" << body.m1_v << ":" << lineForce << ":" << turnForce << endl;
 
  //   m0.fwd(controlRX[6]/4);

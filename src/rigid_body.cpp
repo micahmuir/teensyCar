@@ -40,14 +40,14 @@ void RIGID_BODY::translate(int speed){ // First establish translational speed ve
 
 void RIGID_BODY::turn(int moment){ // then determine joystick turning contribution 
 
-    if(moment > 0){
+    if(moment < 0){
         m0_v =  m0_v + abs(moment);
         m1_v =  m1_v - abs(moment);
         m0_v = constrain(m0_v, -255, 255);
         m1_v = constrain(m1_v, -255, 255);
     }
 
-     if(moment < 0){
+     if(moment > 0){
         m0_v =  m0_v - abs(moment);
         m1_v =  m1_v + abs(moment);
         m0_v = constrain(m0_v, -255, 255);
@@ -58,7 +58,7 @@ void RIGID_BODY::turn(int moment){ // then determine joystick turning contributi
 
 
 void RIGID_BODY::go(){
-    
+
     if(abs(m0_v) < 20){
         m0_v = 0;
     }
