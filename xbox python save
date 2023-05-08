@@ -1,0 +1,56 @@
+import asyncio
+from evdev import InputDevice, categorize, ecodes
+import UDP_Send as UDP
+import numpy as np
+
+dev = InputDevice('/dev/input/event3')
+
+xbox = {
+         307 : 0, # X
+         308 : 0, # Y
+         305 : 0, # B
+         304 : 0, # A
+         17 : 0,  # dy
+         16 : 0,  # dx
+         9 : 0,  #RT
+         10 : 0, #LT
+         2 : 32768,  # Right Stick X
+         5 : 32768, # Right Stick Y
+         1 : 32768, # left stick Y
+         0 : 32768, # left stick X, but doesn't work
+         310 : 0, # lb bumper
+         311 : 0, # rb bumper
+         317 : 0, # left stick click
+         318 : 0   # right stick click
+    }
+
+  
+
+async def helper(dev):
+  
+    async for ev in dev.async_read_loop():
+        #this is what is continuously running I guess?
+       # okay so looks like <timestamp, second timestamp, keycode, value>
+          
+      #  print(ev.code)
+        if ev.code in xbox:
+            if(ev.value == -1):
+                xbox[ev.code] = 2 # zero instead of negative one for unsigned shorts for dx/dy
+            else:
+                xbox[ev.code] = ev.value
+        
+        valueList = list(xbox.values())
+        print(valueList)
+        print(len(valueList))
+        msg = np.array(valueList).astype('H')
+        msg = msg.tobytes()
+        UDP.Send(msg)
+    
+        #print("Sent")
+        #print(dir(keycode))\
+      
+
+       
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(helper(dev))
